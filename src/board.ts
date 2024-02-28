@@ -1,19 +1,19 @@
 import { BOARD_WIDTH, BOARD_HEIGHT, BLOCK_SIZE } from './contstants'
+import { Piece } from './piece'
 import { BlockTiles } from './types'
 
 export class Board {
     
     private readonly canvas: HTMLCanvasElement
     private readonly ctx: CanvasRenderingContext2D
-    private blockTiles: BlockTiles = [[]]
+    private blockTiles: BlockTiles = []
     
     constructor(canvas: HTMLCanvasElement){
         this.canvas = canvas
         this.canvas.width = BOARD_WIDTH
         this.canvas.height = BOARD_HEIGHT
         this.ctx = this.canvas.getContext('2d')!
-        this.blockTiles = new Array(BOARD_HEIGHT / BLOCK_SIZE).fill(new Array(BOARD_WIDTH / BLOCK_SIZE).fill(0))
-        console.log(this.blockTiles)
+        this.blockTiles = Array.from({ length: BOARD_HEIGHT / BLOCK_SIZE }, () => Array(BOARD_WIDTH / BLOCK_SIZE).fill(0))
     }
 
     get getContext() {
@@ -41,5 +41,28 @@ export class Board {
                 }
             }
         }
+    }
+
+    freezePiece(piece: Piece) {
+        const blocks = piece.getBlocks
+        for (let row = 0; row < blocks.length; row++) {
+            for (let col = 0; col < blocks[row].length; col++) {
+                if (Math.round(piece.getY) + col < BOARD_WIDTH / BLOCK_SIZE && Math.round(piece.getX) + row < BOARD_HEIGHT / BLOCK_SIZE && blocks[row][col] === 1) {
+                    this.blockTiles[Math.round(piece.getX) + row][Math.round(piece.getY) + col] = 1
+                }
+            }
+        }
+    }
+
+    checkCollision(piece: Piece) {
+        const blocks = piece.getBlocks
+        for (let row = 0; row < blocks.length; row++) {
+            for (let col = 0; col < blocks[row].length; col++) {
+                if (blocks[row][col] === 1 && this.blockTiles[Math.round(piece.getX) + row][Math.round(piece.getY) + col] === 1) {
+                    return true
+                }
+            }
+        }
+        return false
     }
 }

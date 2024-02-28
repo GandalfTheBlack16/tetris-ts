@@ -32,6 +32,7 @@ function checkCollision(piece: Piece) {
     if ((piece.getX + piece.getVerticalSize()) * BLOCK_SIZE > board.getHeigt) {
         return true
     }
+    return false
 }
 
 function getRandomPiece(): Piece {
@@ -45,9 +46,10 @@ export function gameLoop() {
     const piece = new Piece(currentPiece, currentPieceX, currentPieceY)
     piece.draw(board.getContext)
     moveSides(piece)
-    if (!checkCollision(piece)) {
+    if (!checkCollision(piece) && !board.checkCollision(piece)) {
         moveDown()
     } else {
+        board.freezePiece(piece)
         currentPiece = nextPiece
         nextPiece = getRandomPiece()
         currentPieceX = 0
