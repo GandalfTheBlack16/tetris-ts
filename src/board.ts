@@ -78,4 +78,24 @@ export class Board {
         }
         return false
     }
+
+    checkLine() {
+        let lines = 0
+        for (let row = 0; row < this.blockTiles.length; row++) {
+            if (this.blockTiles[row].every((block) => block === 1)) {
+                this.blockTiles.splice(row, 1)
+                this.blockTiles.unshift(Array(BOARD_WIDTH / BLOCK_SIZE).fill(0))
+                lines++
+                if (lines === 4) {
+                    break
+                }
+            }
+        }
+
+        return lines
+    }
+
+    checkTopCollision() {
+        return this.blockTiles[0].some((block) => block === 1)
+    }
 }

@@ -14,6 +14,9 @@ let leftPressed = false
 let rightPressed = false
 let downPressed = false
 
+let score = 0
+let level = 1
+
 function moveDown() {
     currentPieceX += BLOCK_SPEED + (downPressed ? BLOCK_ACCERELATION : 0)
 }
@@ -43,6 +46,21 @@ function getRandomPiece(): Piece {
     return Blocks[index]
 }
 
+function getScoreMultiplier(lines: number) {
+    switch (lines) {
+        case 1:
+            return 40
+        case 2:
+            return 100
+        case 3:
+            return 300
+        case 4:
+            return 1200
+        default:
+            return 0
+    }
+}
+
 export function gameLoop() {
     board.clear()
     board.drawBlockTiles()
@@ -53,6 +71,14 @@ export function gameLoop() {
         moveDown()
     } else {
         board.freezePiece(piece)
+        if (board.checkTopCollision()) {
+            board.clear()
+        }
+        const lines = board.checkLine()
+        if (lines > 0) {
+            score += getScoreMultiplier(lines) * level
+            console.log(score)
+        }
         currentPiece = nextPiece
         nextPiece = getRandomPiece()
         currentPieceX = 0
