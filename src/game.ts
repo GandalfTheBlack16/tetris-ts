@@ -19,6 +19,9 @@ function moveDown() {
 }
 
 function moveSides(piece: Piece) {
+    if (board.checkHorizontalCollision(piece)) {
+        return
+    }
     if (leftPressed && currentPieceY > 0) {
         currentPieceY -= MOVE_SENSETIVITY
     }
@@ -46,7 +49,7 @@ export function gameLoop() {
     const piece = new Piece(currentPiece, currentPieceX, currentPieceY)
     piece.draw(board.getContext)
     moveSides(piece)
-    if (!checkCollision(piece) && !board.checkCollision(piece)) {
+    if (!checkCollision(piece) && !board.checkVerticalCollision(piece)) {
         moveDown()
     } else {
         board.freezePiece(piece)

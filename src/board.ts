@@ -54,11 +54,24 @@ export class Board {
         }
     }
 
-    checkCollision(piece: Piece) {
+    checkVerticalCollision(piece: Piece) {
         const blocks = piece.getBlocks
         for (let row = 0; row < blocks.length; row++) {
             for (let col = 0; col < blocks[row].length; col++) {
-                if (blocks[row][col] === 1 && this.blockTiles[Math.round(piece.getX) + row][Math.round(piece.getY) + col] === 1) {
+                if (blocks[row][col] === 1 && Math.round(piece.getX) + row + 1 < BOARD_HEIGHT / BLOCK_SIZE && this.blockTiles[Math.round(piece.getX) + row + 1][Math.round(piece.getY) + col] === 1) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    checkHorizontalCollision(piece: Piece) {
+        const blocks = piece.getBlocks
+        for (let row = 0; row < blocks.length; row++) {
+            for (let col = 0; col < blocks[row].length; col++) {
+                if (blocks[row][col] === 1 && Math.round(piece.getY) + col + 1 > 0 && Math.round(piece.getY) + col + 1 < BOARD_WIDTH / BLOCK_SIZE && 
+                this.blockTiles[Math.round(piece.getX) + row][Math.round(piece.getY) + col + 1] === 1) {
                     return true
                 }
             }
