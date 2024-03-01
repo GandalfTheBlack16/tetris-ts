@@ -1,14 +1,14 @@
 import { Blocks } from "./blocks"
 import { Board } from "./board"
-import { BLOCK_ACCERELATION, BLOCK_SIZE, INITIAL_BLOCK_POSITION, MOVE_SENSETIVITY } from "./contstants"
+import { BLOCK_SIZE, INITIAL_BLOCK_POSITION } from "./contstants"
 import { Piece } from "./piece"
 
-const canvas = document.querySelector<HTMLCanvasElement>('#board')!
-const board = new Board(canvas)
-let currentPieceX = 0
-let currentPieceY = INITIAL_BLOCK_POSITION
-let currentPiece = getRandomPiece()
-let nextPiece = getRandomPiece()
+const boardCanvas = document.querySelector<HTMLCanvasElement>('#board')!
+const nextPieceCanvas = document.querySelector<HTMLCanvasElement>('#next-piece')!
+
+const board = new Board(boardCanvas)
+let currentPiece: Piece = getRandomPiece()
+let nextPiece: Piece = getRandomPiece()
 
 let leftPressed = false
 let rightPressed = false
@@ -21,18 +21,18 @@ let level = 1
 let speed = 0.04
 
 function moveDown() {
-    currentPieceX += speed + (downPressed ? BLOCK_ACCERELATION : 0)
+    currentPiece.moveDown(speed, downPressed)
 }
 
 function moveSides(piece: Piece) {
     if (board.checkHorizontalCollision(piece)) {
         return
     }
-    if (leftPressed && currentPieceY > 0) {
-        currentPieceY -= MOVE_SENSETIVITY
+    if (leftPressed && currentPiece.getY > 0) {
+        currentPiece.moveLeft()
     }
-    if (rightPressed && (currentPieceY + piece.getHorizontalSize()) * BLOCK_SIZE < board.getWidth) {
-        currentPieceY += MOVE_SENSETIVITY
+    if (rightPressed && (currentPiece.getY + piece.getHorizontalSize()) * BLOCK_SIZE < board.getWidth) {
+        currentPiece.moveRight()
     }
 }
 
@@ -53,7 +53,7 @@ function checkCollision(piece: Piece) {
 
 function getRandomPiece() {
     const index = Math.floor(Math.random() * Blocks.length)
-    return Blocks[index]
+    return new Piece(Blocks[index], 0, INITIAL_BLOCK_POSITION)
 }
 
 function getScoreMultiplier(lines: number) {
@@ -78,18 +78,24 @@ function increaseLevel() {
     }
 }
 
+function drawNextPiece() {
+    const ctx = nextPieceCanvas.getContext('2d')!
+    ctx.clearRect(0, 0, nextPieceCanvas.width, nextPieceCanvas.height)
+    nextPiece.drawNextPiece(ctx, nextPieceCanvas.width, nextPieceCanvas.height)
+}
+
 export function gameLoop() {
     board.clear()
     board.drawBlockTiles()
-    const piece = new Piece(currentPiece, currentPieceX, currentPieceY)
-    piece.draw(board.getContext)
-    moveSides(piece)
-    rotatePiece(piece)
+    currentPiece.draw(board.getContext)
+    drawNextPiece()
+    moveSides(currentPiece)
+    rotatePiece(currentPiece)
     increaseLevel()
-    if (!checkCollision(piece) && !board.checkVerticalCollision(piece)) {
+    if (!checkCollision(currentPiece) && !board.checkVerticalCollision(currentPiece)) {
         moveDown()
     } else {
-        board.freezePiece(piece)
+        board.freezePiece(currentPiece)
         if (board.checkTopCollision()) {
             console.log("Game over")
             board.clear()
@@ -104,8 +110,6 @@ export function gameLoop() {
         }
         currentPiece = nextPiece
         nextPiece = getRandomPiece()
-        currentPieceX = 0
-        currentPieceY = INITIAL_BLOCK_POSITION
     }
     requestAnimationFrame(gameLoop)
 }

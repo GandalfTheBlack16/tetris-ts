@@ -14,8 +14,7 @@ const I_BLOCK: Block = {
             [1, 0, 0, 0],
             [1, 0, 0, 0],
         ]
-    ],
-    currentPositon: 0
+    ]
 }
 const J_BLOCK: Block = {
     positions: [
@@ -43,8 +42,7 @@ const J_BLOCK: Block = {
             [1, 1, 0, 0],
             [0, 0, 0, 0],
         ],
-    ],
-    currentPositon: 0
+    ]
 }
 const L_BLOCK: Block = {
     positions: [
@@ -72,8 +70,7 @@ const L_BLOCK: Block = {
             [0, 1, 0, 0],
             [0, 0, 0, 0],
         ],
-    ],
-    currentPositon: 0
+    ]
 }
 const O_BLOCK: Block = {
     positions: [
@@ -83,8 +80,7 @@ const O_BLOCK: Block = {
             [0, 0, 0, 0],
             [0, 0, 0, 0]
         ]
-    ],
-    currentPositon: 0
+    ]
 }
 const S_BLOCK: Block = {
     positions: [
@@ -100,8 +96,7 @@ const S_BLOCK: Block = {
             [0, 1, 0, 0],
             [0, 0, 0, 0],
         ],
-    ],
-    currentPositon: 0
+    ]
 }
 const T_BLOCK: Block = {
     positions: [
@@ -129,8 +124,7 @@ const T_BLOCK: Block = {
             [0, 1, 0, 0],
             [0, 0, 0, 0],
         ],
-    ],
-    currentPositon: 0
+    ]
 }
 const Z_BLOCK: Block = {
      positions: [
@@ -146,8 +140,7 @@ const Z_BLOCK: Block = {
             [1, 0, 0, 0],
             [0, 0, 0, 0],
         ]
-     ],
-     currentPositon: 0
+     ]
 }
 
 export const Blocks = [
