@@ -26,9 +26,10 @@ export class Piece {
     }
 
     getVerticalSize() {
-        for(let row = this.blocks.length - 1; row >= 0; row--){
-            for(let col = 0; col < this.blocks[row].length; col++){
-                if(this.blocks[row][col] === 1){
+        const currentBlock = this.blocks.positions[this.blocks.currentPositon]
+        for(let row = currentBlock.length - 1; row >= 0; row--){
+            for(let col = 0; col < currentBlock[row].length; col++){
+                if(currentBlock[row][col] === 1){
                     return row + 1
                 }
             }
@@ -37,9 +38,10 @@ export class Piece {
     }
 
     getHorizontalSize() {
-        for(let col = this.blocks[0].length - 1; col >= 0; col--){
-            for(let row = 0; row < this.blocks.length; row++){
-                if(this.blocks[row][col] === 1){
+        const currentBlock = this.blocks.positions[this.blocks.currentPositon]
+        for(let col = currentBlock[0].length - 1; col >= 0; col--){
+            for(let row = 0; row < currentBlock.length; row++){
+                if(currentBlock[row][col] === 1){
                     return col + 1
                 }
             }
@@ -48,13 +50,18 @@ export class Piece {
     }
 
     draw(ctx: CanvasRenderingContext2D){
-        for(let row = 0; row < this.blocks.length; row++){
-            for(let col = 0; col < this.blocks[row].length; col++){
-                if(this.blocks[row][col] === 1){
+        const currentBlock = this.blocks.positions[this.blocks.currentPositon]
+        for(let row = 0; row < currentBlock.length; row++){
+            for(let col = 0; col < currentBlock[row].length; col++){
+                if(currentBlock[row][col] === 1){
                     ctx.fillStyle = '#a12f2f'
                     ctx.fillRect((this.y + col) * BLOCK_SIZE, (this.x + row) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE)
                 }
             }
         }
+    }
+
+    rotate() {
+        this.blocks.currentPositon = (this.blocks.currentPositon + 1) % this.blocks.positions.length
     }
 }

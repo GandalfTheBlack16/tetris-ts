@@ -1,6 +1,6 @@
 import { Blocks } from "./blocks"
 import { Board } from "./board"
-import { BLOCK_ACCERELATION, BLOCK_SIZE, BLOCK_SPEED, INITIAL_BLOCK_POSITION, MOVE_SENSETIVITY } from "./contstants"
+import { BLOCK_ACCERELATION, BLOCK_SIZE, INITIAL_BLOCK_POSITION, MOVE_SENSETIVITY } from "./contstants"
 import { Piece } from "./piece"
 
 const canvas = document.querySelector<HTMLCanvasElement>('#board')!
@@ -13,12 +13,15 @@ let nextPiece = getRandomPiece()
 let leftPressed = false
 let rightPressed = false
 let downPressed = false
+let upPressed = false
 
+let lines = 0
 let score = 0
 let level = 1
+let speed = 0.04
 
 function moveDown() {
-    currentPieceX += BLOCK_SPEED + (downPressed ? BLOCK_ACCERELATION : 0)
+    currentPieceX += speed + (downPressed ? BLOCK_ACCERELATION : 0)
 }
 
 function moveSides(piece: Piece) {
@@ -33,6 +36,13 @@ function moveSides(piece: Piece) {
     }
 }
 
+function rotatePiece(piece: Piece) {
+    if (upPressed){
+        piece.rotate()
+        upPressed = false
+    }
+}
+
 function checkCollision(piece: Piece) {
     //Bottom collision
     if ((piece.getX + piece.getVerticalSize()) * BLOCK_SIZE > board.getHeigt) {
@@ -41,7 +51,7 @@ function checkCollision(piece: Piece) {
     return false
 }
 
-function getRandomPiece(): Piece {
+function getRandomPiece() {
     const index = Math.floor(Math.random() * Blocks.length)
     return Blocks[index]
 }
@@ -61,23 +71,36 @@ function getScoreMultiplier(lines: number) {
     }
 }
 
+function increaseLevel() {
+    if (lines >= level * 10) {
+        level++
+        speed *= 1.1
+    }
+}
+
 export function gameLoop() {
     board.clear()
     board.drawBlockTiles()
     const piece = new Piece(currentPiece, currentPieceX, currentPieceY)
     piece.draw(board.getContext)
     moveSides(piece)
+    rotatePiece(piece)
+    increaseLevel()
     if (!checkCollision(piece) && !board.checkVerticalCollision(piece)) {
         moveDown()
     } else {
         board.freezePiece(piece)
         if (board.checkTopCollision()) {
+            console.log("Game over")
             board.clear()
         }
-        const lines = board.checkLine()
-        if (lines > 0) {
-            score += getScoreMultiplier(lines) * level
-            console.log(score)
+        const lines_completed = board.checkLine()
+        if (lines_completed > 0) {
+            score += getScoreMultiplier(lines_completed) * level
+            lines += lines_completed
+            console.log("Lines completed", lines)
+            console.log("Current score", score)
+            console.log("Current level", level)
         }
         currentPiece = nextPiece
         nextPiece = getRandomPiece()
@@ -91,6 +114,7 @@ export function initEvents() {
     document.addEventListener('keydown', (event) => {
         switch (event.key) {
             case 'ArrowUp':
+                upPressed = true
                 break
             case 'ArrowDown':
                 downPressed = true

@@ -44,7 +44,7 @@ export class Board {
     }
 
     freezePiece(piece: Piece) {
-        const blocks = piece.getBlocks
+        const blocks = piece.getBlocks.positions[piece.getBlocks.currentPositon]
         for (let row = 0; row < blocks.length; row++) {
             for (let col = 0; col < blocks[row].length; col++) {
                 if (Math.round(piece.getY) + col < BOARD_WIDTH / BLOCK_SIZE && Math.round(piece.getX) + row < BOARD_HEIGHT / BLOCK_SIZE && blocks[row][col] === 1) {
@@ -55,7 +55,7 @@ export class Board {
     }
 
     checkVerticalCollision(piece: Piece) {
-        const blocks = piece.getBlocks
+        const blocks = piece.getBlocks.positions[piece.getBlocks.currentPositon]
         for (let row = 0; row < blocks.length; row++) {
             for (let col = 0; col < blocks[row].length; col++) {
                 if (blocks[row][col] === 1 && Math.round(piece.getX) + row + 1 < BOARD_HEIGHT / BLOCK_SIZE && this.blockTiles[Math.round(piece.getX) + row + 1][Math.round(piece.getY) + col] === 1) {
@@ -67,7 +67,7 @@ export class Board {
     }
 
     checkHorizontalCollision(piece: Piece) {
-        const blocks = piece.getBlocks
+        const blocks = piece.getBlocks.positions[piece.getBlocks.currentPositon]
         for (let row = 0; row < blocks.length; row++) {
             for (let col = 0; col < blocks[row].length; col++) {
                 if (blocks[row][col] === 1 && Math.round(piece.getY) + col + 1 > 0 && Math.round(piece.getY) + col + 1 < BOARD_WIDTH / BLOCK_SIZE && 
