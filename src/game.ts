@@ -19,6 +19,7 @@ let lines = 0
 let score = 0
 let level = 1
 let speed = 0.04
+let gameOver = false
 
 function moveDown() {
     currentPiece.moveDown(speed, downPressed)
@@ -85,33 +86,35 @@ function drawNextPiece() {
 }
 
 export function gameLoop() {
-    board.clear()
-    board.drawBlockTiles()
-    currentPiece.draw(board.getContext)
-    drawNextPiece()
-    moveSides(currentPiece)
-    rotatePiece(currentPiece)
-    increaseLevel()
-    if (!checkCollision(currentPiece) && !board.checkVerticalCollision(currentPiece)) {
-        moveDown()
-    } else {
-        board.freezePiece(currentPiece)
-        if (board.checkTopCollision()) {
-            console.log("Game over")
-            board.clear()
+    if (!gameOver) {
+        board.clear()
+        board.drawBlockTiles()
+        currentPiece.draw(board.getContext)
+        drawNextPiece()
+        moveSides(currentPiece)
+        rotatePiece(currentPiece)
+        increaseLevel()
+        if (!checkCollision(currentPiece) && !board.checkVerticalCollision(currentPiece)) {
+            moveDown()
+        } else {
+            board.freezePiece(currentPiece)
+            if (board.checkTopCollision()) {
+                console.log("Game over")
+                gameOver = true
+            }
+            const lines_completed = board.checkLine()
+            if (lines_completed > 0) {
+                score += getScoreMultiplier(lines_completed) * level
+                lines += lines_completed
+                console.log("Lines completed", lines)
+                console.log("Current score", score)
+                console.log("Current level", level)
+            }
+            currentPiece = nextPiece
+            nextPiece = getRandomPiece()
         }
-        const lines_completed = board.checkLine()
-        if (lines_completed > 0) {
-            score += getScoreMultiplier(lines_completed) * level
-            lines += lines_completed
-            console.log("Lines completed", lines)
-            console.log("Current score", score)
-            console.log("Current level", level)
-        }
-        currentPiece = nextPiece
-        nextPiece = getRandomPiece()
+        requestAnimationFrame(gameLoop)
     }
-    requestAnimationFrame(gameLoop)
 }
 
 export function initEvents() {
